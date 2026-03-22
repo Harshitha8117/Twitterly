@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex align-items-center gap-3">
+  <a href="{% url 'profile' username=user.username %}" class="btn btn-icon-round">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <h5>Edit Profile</h5>
+</div>
+
+<div class="p-4">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label fw-600">Profile Picture</label>
+      {{ form.profile_picture }}
+      {% if user.profile_picture %}
+        <div class="mt-2">
+          <img src="{{ user.profile_picture.url }}" class="avatar-lg" alt="current"/>
+          <small class="text-muted ms-2">Current photo</small>
+        </div>
+      {% endif %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-600">Cover Photo</label>
+      {{ form.cover_photo }}
+    </div>
+    <div class="row g-3 mb-3">
+      <div class="col-6">
+        <label class="form-label fw-600">First Name</label>
+        {{ form.first_name }}
+      </div>
+      <div class="col-6">
+        <label class="form-label fw-600">Last Name</label>
+        {{ form.last_name }}
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-600">Bio</label>
+      {{ form.bio }}
+      <small class="text-muted">160 characters max</small>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-600">Location</label>
+      {{ form.location }}
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-600">Website</label>
+      {{ form.website }}
+    </div>
+    <div class="mb-4">
+      <label class="form-label fw-600">Date of Birth</label>
+      {{ form.date_of_birth }}
+    </div>
+    <button type="submit" class="btn-tweet-submit px-5">Save</button>
+  </form>
+</div>
+{% endblock %}

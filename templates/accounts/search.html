@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Search — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h5>Search Users</h5>
+</div>
+
+<div class="p-4">
+  <form method="GET">
+    <div class="input-group mb-4">
+      <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+      <input type="text" name="q" value="{{ query }}" class="form-control border-start-0 bg-light"
+        placeholder="Search by name or username" style="box-shadow:none"/>
+      <button class="btn btn-primary">Search</button>
+    </div>
+  </form>
+
+  {% for u in users %}
+  <div class="d-flex align-items-center gap-3 p-3 border-bottom hover-bg">
+    <a href="{% url 'profile' username=u.username %}">
+      <img src="{{ u.get_profile_picture_url }}" class="avatar-sm" alt="{{ u.username }}"/>
+    </a>
+    <div class="flex-grow-1">
+      <a href="{% url 'profile' username=u.username %}" class="fw-700 text-dark text-decoration-none d-block">
+        {{ u.get_full_name|default:u.username }}
+      </a>
+      <span class="text-muted">@{{ u.username }}</span>
+      {% if u.bio %}<p class="mb-0 small mt-1">{{ u.bio|truncatechars:80 }}</p>{% endif %}
+    </div>
+    <button class="btn-follow-sm" onclick="toggleFollow(this, '{{ u.username }}')">Follow</button>
+  </div>
+  {% empty %}
+    {% if query %}
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fas fa-user-slash"></i></div>
+        <h4>No users found for "{{ query }}"</h4>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

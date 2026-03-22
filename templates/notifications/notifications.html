@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Notifications — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h5>Notifications</h5>
+</div>
+
+{% if notifications %}
+  {% for notif in notifications %}
+  <div class="notification-item {% if not notif.is_read %}unread{% endif %}">
+    <div class="notif-icon">{{ notif.get_icon }}</div>
+    <div class="notif-content">
+      {% if notif.sender %}
+        <a href="{% url 'profile' username=notif.sender.username %}" class="fw-700 text-decoration-none text-dark">
+          @{{ notif.sender.username }}
+        </a>
+      {% endif %}
+      {{ notif.message }}
+      {% if notif.tweet %}
+        <a href="{% url 'tweet_detail' tweet_id=notif.tweet.id %}" class="text-muted ms-1 text-decoration-none small">
+          → View tweet
+        </a>
+      {% endif %}
+      <div class="notif-time">{{ notif.created_at|timesince }} ago</div>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon"><i class="fas fa-bell-slash"></i></div>
+    <h4>No notifications yet</h4>
+    <p>When you get new notifications, they'll show up here.</p>
+  </div>
+{% endif %}
+{% endblock %}

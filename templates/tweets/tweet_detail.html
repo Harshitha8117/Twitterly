@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tweet by @{{ tweet.author.username }} — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex align-items-center gap-3">
+  <a href="javascript:history.back()" class="btn btn-icon-round">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <h5>Tweet</h5>
+</div>
+
+<!-- Tweet Detail -->
+<div class="p-4 border-bottom">
+  <div class="d-flex gap-3 mb-3">
+    <a href="{% url 'profile' username=tweet.author.username %}">
+      <img src="{{ tweet.author.get_profile_picture_url }}" class="avatar-md" alt="{{ tweet.author.username }}"/>
+    </a>
+    <div>
+      <a href="{% url 'profile' username=tweet.author.username %}" class="tweet-author-name d-block">
+        {{ tweet.author.get_full_name|default:tweet.author.username }}
+        {% if tweet.author.is_verified %}<i class="fas fa-check-circle verified-badge"></i>{% endif %}
+      </a>
+      <span class="tweet-author-handle">@{{ tweet.author.username }}</span>
+    </div>
+  </div>
+
+  {% if tweet.is_flagged and request.user.is_staff %}
+    <div class="mb-3">
+      <span class="flag-badge {{ tweet.flag_reason }}">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ tweet.flag_reason|title }} Flagged
+        ({{ tweet.flag_confidence|floatformat:0 }}% confidence)
+      </span>
+    </div>
+  {% endif %}
+
+  <p class="fs-4 mb-3" style="line-height:1.5">{{ tweet.content|linebreaksbr }}</p>
+
+  {% if tweet.image %}
+    <img src="{{ tweet.image.url }}" class="tweet-image w-100 mb-3" alt="Tweet image"/>
+  {% endif %}
+
+  <div class="text-muted small mb-3">{{ tweet.created_at|date:"h:i A · M j, Y" }}</div>
+
+  <!-- Stats -->
+  <div class="d-flex gap-4 py-3 border-top border-bottom mb-3">
+    <span><strong>{{ tweet.get_retweets_count }}</strong> <span class="text-muted">Retweets</span></span>
+    <span><strong>{{ tweet.get_likes_count }}</strong> <span class="text-muted">Likes</span></span>
+    <span><strong>{{ tweet.get_comments_count }}</strong> <span class="text-muted">Replies</span></span>
+  </div>
+
+  <!-- Actions -->
+  <div class="tweet-actions justify-content-around">
+    <button class="action-btn" id="rt-btn-detail"
+            onclick="toggleRetweet(this, {{ tweet.id }})">
+      <i class="fas fa-retweet"></i>
+    </button>
+    <button class="action-btn" id="like-btn-detail"
+            onclick="toggleLike(this, {{ tweet.id }})">
+      <i class="far fa-heart"></i>
+    </button>
+    <button class="action-btn" id="bm-btn-detail"
+            onclick="toggleBookmark(this, {{ tweet.id }})">
+      <i class="far fa-bookmark"></i>
+    </button>
+    {% if tweet.author == request.user %}
+    <form method="POST" action="{% url 'delete_tweet' tweet_id=tweet.id %}" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="action-btn text-danger" onclick="return confirm('Delete this tweet?')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Reply Box -->
+<div class="compose-area border-bottom">
+  <img src="{{ request.user.get_profile_picture_url }}" class="avatar-sm" alt="you"/>
+  <div class="flex-grow-1">
+    <form method="POST">
+      {% csrf_token %}
+      {{ comment_form.content }}
+      <div class="d-flex justify-content-end mt-2">
+        <button type="submit" class="btn-tweet-submit">Reply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Comments -->
+{% for comment in comments %}
+<div class="tweet-card">
+  <a href="{% url 'profile' username=comment.author.username %}">
+    <img src="{{ comment.author.get_profile_picture_url }}" class="avatar-sm" alt="{{ comment.author.username }}"/>
+  </a>
+  <div class="tweet-body">
+    <div class="tweet-header">
+      <a href="{% url 'profile' username=comment.author.username %}" class="tweet-author-name">
+        {{ comment.author.get_full_name|default:comment.author.username }}
+      </a>
+      <span class="tweet-author-handle">@{{ comment.author.username }}</span>
+      <span class="tweet-time">· {{ comment.created_at|timesince }} ago</span>
+    </div>
+    {% if comment.is_flagged and request.user.is_staff %}
+      <span class="flag-badge {{ comment.flag_reason }}">
+        <i class="fas fa-exclamation-triangle"></i> {{ comment.flag_reason|title }}
+      </span>
+    {% endif %}
+    <p class="tweet-content">{{ comment.content }}</p>
+    <!-- Nested replies -->
+    {% for reply in comment.replies.all %}
+      {% if not reply.is_deleted %}
+      <div class="d-flex gap-2 mt-2 ps-3 border-start border-2">
+        <img src="{{ reply.author.get_profile_picture_url }}" class="avatar-sm" style="width:32px;height:32px" alt="{{ reply.author.username }}"/>
+        <div>
+          <span class="fw-700 small">@{{ reply.author.username }}</span>
+          <p class="mb-0 small">{{ reply.content }}</p>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+    <!-- Reply to comment -->
+    <form method="POST" class="mt-2 d-flex gap-2">
+      {% csrf_token %}
+      <input type="hidden" name="parent_id" value="{{ comment.id }}"/>
+      <input type="text" name="content" class="form-control form-control-sm rounded-pill" placeholder="Reply..." maxlength="280" style="font-size:13px"/>
+      <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3" style="font-size:13px; white-space:nowrap">Reply</button>
+    </form>
+  </div>
+</div>
+{% empty %}
+<div class="empty-state py-5">
+  <p class="text-muted">No replies yet. Be the first to reply!</p>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+fetch('/tweet/{{ tweet.id }}/status/', {credentials:"same-origin"})
+  .then(r => r.json())
+  .then(d => {
+    if (d.is_liked) {
+      var b = document.getElementById("like-btn-detail");
+      if(b){ b.classList.add("liked"); b.querySelector("i").className="fas fa-heart"; }
+    }
+    if (d.is_retweeted) {
+      var b = document.getElementById("rt-btn-detail");
+      if(b) b.classList.add("retweeted");
+    }
+    if (d.is_bookmarked) {
+      var b = document.getElementById("bm-btn-detail");
+      if(b){ b.classList.add("bookmarked"); b.querySelector("i").className="fas fa-bookmark"; }
+    }
+  }).catch(()=>{});
+</script>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'admin_portal/base_admin.html' %}
+{% load tweet_filters %}
+
+{% block title %}@{{ target_user.username }} — Admin Portal{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex align-items-center gap-3 mb-4">
+  <a href="{% url 'admin_users' %}" class="btn btn-outline-secondary rounded-circle" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <h1 class="admin-page-title mb-0">User: @{{ target_user.username }}</h1>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="bg-white rounded-4 p-4 border mb-4">
+      <div class="text-center mb-4">
+        <img src="{{ target_user.get_profile_picture_url }}" class="rounded-circle mb-3" style="width:80px;height:80px;object-fit:cover"/>
+        <h5 class="fw-800 mb-1">{{ target_user.get_full_name|default:target_user.username }}</h5>
+        <div class="text-muted">@{{ target_user.username }}</div>
+        {% if target_user.is_blocked %}
+          <span class="badge bg-danger mt-2 d-block py-2">🚫 Account Blocked</span>
+        {% elif target_user.is_warned %}
+          <span class="badge bg-warning text-dark mt-2 d-block py-2">⚠️ Account Warned</span>
+        {% else %}
+          <span class="badge bg-success mt-2 d-block py-2">✅ Active</span>
+        {% endif %}
+      </div>
+
+      <hr/>
+
+      <div class="d-flex flex-column gap-2 text-muted small">
+        <div><i class="fas fa-envelope me-2 text-muted"></i>{{ target_user.email }}</div>
+        <div><i class="fas fa-calendar me-2 text-muted"></i>Joined {{ target_user.date_joined|date:"M j, Y" }}</div>
+        <div><i class="fas fa-flag me-2 text-muted"></i>{{ target_user.warning_count }} warning(s)</div>
+        {% if target_user.bio %}<div><i class="fas fa-info-circle me-2 text-muted"></i>{{ target_user.bio }}</div>{% endif %}
+        {% if target_user.location %}<div><i class="fas fa-map-marker-alt me-2 text-muted"></i>{{ target_user.location }}</div>{% endif %}
+      </div>
+
+      <div class="row g-2 mt-3 text-center">
+        <div class="col-4">
+          <div class="fw-800 fs-5">{{ target_user.get_followers_count }}</div>
+          <div class="text-muted small">Followers</div>
+        </div>
+        <div class="col-4">
+          <div class="fw-800 fs-5">{{ target_user.get_following_count }}</div>
+          <div class="text-muted small">Following</div>
+        </div>
+        <div class="col-4">
+          <div class="fw-800 fs-5">{{ tweets.count }}</div>
+          <div class="text-muted small">Tweets</div>
+        </div>
+      </div>
+
+      {% if not target_user.is_staff %}
+      <div class="mt-4">
+        <button class="btn {% if target_user.is_blocked %}btn-success{% else %}btn-danger{% endif %} w-100 rounded-3"
+                onclick="toggleBlock(this, {{ target_user.id }})">
+          {% if target_user.is_blocked %}
+            <i class="fas fa-check me-2"></i>Unblock User
+          {% else %}
+            <i class="fas fa-ban me-2"></i>Block User
+          {% endif %}
+        </button>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Flag Reports -->
+    <div class="bg-white rounded-4 p-4 border">
+      <h6 class="fw-800 mb-3">📋 Flag Reports ({{ reports.count }})</h6>
+      {% for report in reports %}
+        <a href="{% url 'admin_report_detail' report_id=report.id %}" class="d-flex gap-2 align-items-center p-2 rounded-3 text-decoration-none text-dark mb-2" style="background:#f8fafc">
+          <span class="label-badge {{ report.detected_label }}">{{ report.detected_label|replace:"_: "|title }}</span>
+          <span class="text-muted small">{{ report.created_at|date:"M j" }}</span>
+          <span class="status-badge {{ report.status }} ms-auto">{{ report.get_status_display }}</span>
+        </a>
+      {% empty %}
+        <p class="text-muted small">No reports for this user.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <!-- Flagged Tweets -->
+    {% if flagged_tweets %}
+    <div class="bg-white rounded-4 p-4 border mb-4">
+      <h6 class="fw-800 mb-3">🚨 Flagged Tweets ({{ flagged_tweets.count }})</h6>
+      {% for tweet in flagged_tweets %}
+      <div class="bg-light rounded-3 p-3 mb-2">
+        <span class="flag-badge {{ tweet.flag_reason }} mb-2 d-inline-block">{{ tweet.flag_reason|replace:"_: "|title }}</span>
+        <p class="mb-1">{{ tweet.content }}</p>
+        <small class="text-muted">{{ tweet.created_at|date:"M j, Y · h:i A" }}</small>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- All Tweets -->
+    <div class="bg-white rounded-4 p-4 border">
+      <h6 class="fw-800 mb-3">🐦 Recent Tweets</h6>
+      {% for tweet in tweets %}
+      <div class="border-bottom py-3">
+        <p class="mb-1">{{ tweet.content }}</p>
+        <div class="d-flex gap-3 text-muted small align-items-center">
+          <span>{{ tweet.created_at|timesince }} ago</span>
+          <span>❤️ {{ tweet.get_likes_count }}</span>
+          <span>🔁 {{ tweet.get_retweets_count }}</span>
+          {% if tweet.is_flagged %}<span class="flag-badge {{ tweet.flag_reason }}">{{ tweet.flag_reason|replace:"_: "|title }}</span>{% endif %}
+        </div>
+      </div>
+      {% empty %}
+        <p class="text-muted">No tweets yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

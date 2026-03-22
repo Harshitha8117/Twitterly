@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Bookmarks — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h5>Bookmarks</h5>
+  <small class="text-muted">@{{ user.username }}</small>
+</div>
+
+{% if tweets %}
+  {% for tweet in tweets %}{% include 'tweets/tweet_card.html' %}{% endfor %}
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon"><i class="fas fa-bookmark"></i></div>
+    <h4>Save Tweets for later</h4>
+    <p>Don't let the good ones fly away! Bookmark Tweets to easily find them again in the future.</p>
+  </div>
+{% endif %}
+{% endblock %}

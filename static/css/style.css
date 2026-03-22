@@ -1,0 +1,789 @@
+/* === TWITTERLY - LIGHT MODE CSS === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --twitter-blue: #1DA1F2;
+  --twitter-blue-dark: #1a8cd8;
+  --twitter-blue-light: #e8f5fe;
+  --text-primary: #0f1419;
+  --text-secondary: #536471;
+  --text-muted: #8b98a5;
+  --border-color: #eff3f4;
+  --bg-app: #f7f9f9;
+  --bg-white: #ffffff;
+  --bg-hover: #f7f9f9;
+  --red: #f4212e;
+  --green: #00ba7c;
+  --orange: #ff7100;
+  --sidebar-width: 275px;
+  --right-sidebar-width: 350px;
+  --max-content-width: 600px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* === APP LAYOUT === */
+.app-layout {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* === LEFT SIDEBAR === */
+.sidebar-left {
+  width: var(--sidebar-width);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 12px;
+  padding-bottom: 20px;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  margin: 8px 0;
+  text-decoration: none;
+  border-radius: 9999px;
+  transition: background .2s;
+  width: fit-content;
+}
+.sidebar-logo:hover { background: var(--twitter-blue-light); }
+.logo-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--twitter-blue);
+  letter-spacing: -0.5px;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.sidebar-nav li { margin: 2px 0; }
+
+.nav-link-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+  border-radius: 9999px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 20px;
+  font-weight: 400;
+  transition: background .2s, color .2s;
+  position: relative;
+  width: fit-content;
+  min-width: 52px;
+}
+
+.nav-link-item span {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.nav-link-item:hover {
+  background: var(--bg-hover);
+  color: var(--twitter-blue);
+}
+
+.nav-link-item.active {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.nav-link-item.admin-link { color: #f4212e; }
+.nav-link-item.admin-link:hover { background: #fef0f0; }
+
+.nav-icon { font-size: 24px; width: 26px; text-align: center; }
+
+.badge-pill {
+  background: var(--twitter-blue);
+  color: white;
+  border-radius: 9999px;
+  padding: 2px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+.btn-tweet-compose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--twitter-blue);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 16px 24px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  margin: 16px 0;
+  transition: background .2s, transform .1s;
+}
+.btn-tweet-compose:hover { background: var(--twitter-blue-dark); }
+.btn-tweet-compose:active { transform: scale(0.97); }
+
+.user-menu-bottom { margin-top: auto; }
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background .2s;
+  text-align: left;
+}
+.user-menu-btn:hover { background: var(--bg-hover); }
+.user-menu-btn::after { display: none; }
+
+.user-menu-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.user-name { font-weight: 700; font-size: 15px; color: var(--text-primary); line-height: 1.2; }
+.user-handle { font-size: 13px; color: var(--text-secondary); }
+
+/* === MAIN CONTENT === */
+.main-content {
+  width: var(--max-content-width);
+  min-width: 0;
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  min-height: 100vh;
+  background: var(--bg-white);
+}
+
+.page-header {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 20px;
+  z-index: 100;
+}
+
+.page-header h5 {
+  font-weight: 800;
+  font-size: 20px;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* === RIGHT SIDEBAR === */
+.sidebar-right {
+  width: var(--right-sidebar-width);
+  flex-shrink: 0;
+}
+
+.sidebar-right-inner {
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+}
+
+.search-box .input-group {
+  background: var(--bg-app);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.search-box .input-group-text {
+  background: var(--bg-app);
+  border: 1px solid transparent;
+  border-right: none;
+  padding-left: 16px;
+}
+.search-box .form-control {
+  background: var(--bg-app);
+  border: 1px solid transparent;
+  border-left: none;
+  padding-right: 16px;
+  box-shadow: none;
+}
+.search-box .form-control:focus {
+  background: var(--bg-white);
+  border-color: var(--twitter-blue);
+  outline: none;
+}
+.search-box .form-control:focus ~ .input-group-text {
+  border-color: var(--twitter-blue);
+}
+
+.sidebar-card {
+  background: var(--bg-app);
+  border-radius: 16px;
+  padding: 16px;
+}
+.sidebar-card-title {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.trending-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background .15s;
+}
+.trending-item:hover { background: rgba(0,0,0,.03); padding-left: 6px; }
+.trending-hash { font-weight: 700; color: var(--text-primary); font-size: 15px; }
+.trending-count { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+/* === TWEET CARD === */
+.tweet-card {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background .15s;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tweet-card:hover { background: var(--bg-hover); }
+.tweet-card .tweet-body { flex: 1; min-width: 0; overflow: hidden; }
+
+.tweet-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.tweet-author-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.tweet-author-name:hover { text-decoration: underline; color: var(--text-primary); }
+
+.tweet-author-handle {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.tweet-time { color: var(--text-secondary); font-size: 15px; }
+
+.tweet-content {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  word-break: break-word;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  margin-bottom: 8px;
+  width: 100%;
+  display: block;
+}
+
+.tweet-content a { color: var(--twitter-blue); text-decoration: none; }
+.tweet-content a:hover { text-decoration: underline; }
+
+.tweet-image {
+  border-radius: 16px;
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  margin-bottom: 8px;
+}
+
+/* Tweet Actions */
+.tweet-actions {
+  display: flex;
+  gap: 0;
+  margin-top: 4px;
+  justify-content: space-between;
+  max-width: 425px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  transition: all .15s;
+}
+.action-btn:hover { color: var(--twitter-blue); background: var(--twitter-blue-light); }
+.action-btn.liked { color: var(--red); }
+.action-btn.liked:hover { color: var(--red); background: #fde8ea; }
+.action-btn.retweeted { color: var(--green); }
+.action-btn.retweeted:hover { background: rgba(0,186,124,.1); }
+.action-btn.bookmarked { color: var(--twitter-blue); }
+.action-btn i { font-size: 15px; }
+.action-btn .count { font-size: 13px; font-weight: 500; }
+
+/* Flagged badge */
+.flag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.flag-badge.hate_speech { background: #fde8ea; color: #f4212e; }
+.flag-badge.cyberbullying { background: #fff3e0; color: #ff7100; }
+
+/* Retweet indicator */
+.retweet-indicator {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Quoted tweet */
+.quoted-tweet {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+  text-decoration: none;
+  display: block;
+  color: var(--text-primary);
+  transition: background .15s;
+}
+.quoted-tweet:hover { background: var(--bg-hover); }
+
+/* === COMPOSE TWEET (INLINE) === */
+.compose-area {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tweet-textarea {
+  border: none !important;
+  resize: none;
+  font-size: 20px;
+  box-shadow: none !important;
+  padding: 0;
+}
+.tweet-textarea::placeholder { color: var(--text-muted); }
+.tweet-textarea:focus { outline: none; }
+
+.char-counter {
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.char-counter.warning { color: var(--orange); }
+.char-counter.danger { color: var(--red); }
+
+.btn-tweet-submit {
+  background: var(--twitter-blue);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  transition: background .2s;
+}
+.btn-tweet-submit:hover { background: var(--twitter-blue-dark); }
+.btn-tweet-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-icon-round {
+  border: none;
+  background: transparent;
+  color: var(--twitter-blue);
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-icon-round:hover { background: var(--twitter-blue-light); }
+
+/* === AVATARS === */
+.avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.avatar-md { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.avatar-lg { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.avatar-xl { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid white; }
+
+/* === PROFILE PAGE === */
+.cover-photo {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #1DA1F2 0%, #0d7abf 100%);
+}
+
+.profile-info-section {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.profile-avatar-wrap {
+  margin-top: -50px;
+  margin-bottom: 12px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+}
+.profile-stat a {
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.profile-stat a:hover .stat-label { text-decoration: underline; }
+.stat-number { font-weight: 700; font-size: 15px; }
+.stat-label { color: var(--text-secondary); font-size: 15px; }
+
+.btn-follow {
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-follow:hover { background: #272c30; }
+.btn-follow.following {
+  background: white;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.btn-follow.following:hover { background: #fde8ea; color: var(--red); border-color: var(--red); }
+
+.btn-edit-profile {
+  border: 1px solid var(--border-color);
+  background: white;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background .15s;
+}
+.btn-edit-profile:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+/* === NOTIFICATIONS === */
+.notification-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background .15s;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.notification-item:hover { background: var(--bg-hover); }
+.notification-item.unread { background: #f0f9ff; }
+.notification-item.unread:hover { background: #e8f5fe; }
+.notif-icon { font-size: 22px; width: 42px; text-align: center; flex-shrink: 0; }
+.notif-content { flex: 1; font-size: 15px; }
+.notif-time { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+/* === ADMIN PORTAL === */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 260px;
+  background: var(--text-primary);
+  color: white;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.admin-sidebar-inner { padding: 24px 16px; }
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 24px;
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: rgba(255,255,255,.7);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all .15s;
+  margin-bottom: 4px;
+}
+.admin-nav-link:hover, .admin-nav-link.active {
+  background: rgba(255,255,255,.15);
+  color: white;
+}
+.admin-nav-link i { width: 20px; text-align: center; }
+
+.admin-main {
+  flex: 1;
+  padding: 32px;
+  background: #f8fafc;
+  overflow-y: auto;
+}
+
+.admin-page-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+/* Stat Cards */
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  transition: box-shadow .2s;
+}
+.stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+.stat-card-icon { font-size: 32px; margin-bottom: 8px; }
+.stat-card-value { font-size: 36px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+.stat-card-label { font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; }
+
+/* Report cards */
+.report-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  transition: box-shadow .15s;
+}
+.report-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+
+.label-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.label-badge.hate_speech { background: #fde8ea; color: #f4212e; }
+.label-badge.cyberbullying { background: #fff3e0; color: #ff7100; }
+.label-badge.normal { background: #e8f5e9; color: #2e7d32; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.status-badge.pending { background: #fff3e0; color: #e65100; }
+.status-badge.reviewed { background: #e3f2fd; color: #1565c0; }
+.status-badge.action_taken { background: #e8f5e9; color: #2e7d32; }
+.status-badge.dismissed { background: #f3f4f6; color: #6b7280; }
+
+/* Confidence bar */
+.confidence-bar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.confidence-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  transition: width .3s;
+}
+
+/* === AUTH PAGES === */
+.auth-page {
+  min-height: 100vh;
+  background: var(--bg-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 40px;
+}
+
+.auth-logo {
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--twitter-blue);
+  margin-bottom: 24px;
+  letter-spacing: -1px;
+}
+
+.auth-title {
+  font-size: 31px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.auth-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+
+.form-control:focus {
+  border-color: var(--twitter-blue);
+  box-shadow: 0 0 0 3px rgba(29,161,242,.15);
+}
+
+.btn-auth-primary {
+  width: 100%;
+  background: var(--twitter-blue);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 14px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-auth-primary:hover { background: var(--twitter-blue-dark); }
+
+/* === FOLLOW SUGGESTION === */
+.follow-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.follow-suggestion:last-child { border-bottom: none; }
+.follow-suggestion .user-info { flex: 1; }
+.follow-suggestion .uname { font-weight: 700; font-size: 15px; color: var(--text-primary); text-decoration: none; }
+.follow-suggestion .uhandle { font-size: 13px; color: var(--text-secondary); }
+
+.btn-follow-sm {
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.btn-follow-sm:hover { background: #272c30; }
+
+/* === MISC === */
+.text-twitter { color: var(--twitter-blue); }
+.fw-500 { font-weight: 500; }
+.fw-800 { font-weight: 800; }
+
+.verified-badge { color: var(--twitter-blue); font-size: 14px; }
+.warned-badge { color: var(--orange); font-size: 13px; font-weight: 600; }
+.blocked-badge { color: var(--red); font-size: 13px; font-weight: 600; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 32px;
+  color: var(--text-secondary);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; color: var(--text-muted); }
+.empty-state h4 { font-weight: 800; color: var(--text-primary); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ccd0d4; border-radius: 3px; }
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .sidebar-right { display: none; }
+}
+@media (max-width: 900px) {
+  .sidebar-left { width: 72px; }
+  .nav-link-item span, .logo-text, .user-menu-info, .btn-tweet-compose span { display: none; }
+  .btn-tweet-compose { width: 52px; height: 52px; padding: 0; border-radius: 50%; justify-content: center; }
+  .nav-link-item { gap: 0; justify-content: center; width: 52px; height: 52px; padding: 0; }
+  .user-menu-btn { justify-content: center; }
+}
+@media (max-width: 600px) {
+  .sidebar-left { display: none; }
+  .main-content { width: 100%; }
+}

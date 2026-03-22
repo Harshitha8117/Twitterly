@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}@{{ profile_user.username }} — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex align-items-center gap-3">
+  <a href="javascript:history.back()" class="btn btn-icon-round"><i class="fas fa-arrow-left"></i></a>
+  <div>
+    <h5 class="mb-0">{{ profile_user.get_full_name|default:profile_user.username }}</h5>
+    <small class="text-muted">{{ tweets_count }} Tweets</small>
+  </div>
+</div>
+
+<!-- Cover Photo -->
+<div style="height:200px; background: linear-gradient(135deg, #1DA1F2 0%, #0d7abf 100%); overflow:hidden;">
+  {% if profile_user.cover_photo %}
+    <img src="{{ profile_user.cover_photo.url }}" class="w-100 h-100" style="object-fit:cover" alt="cover"/>
+  {% endif %}
+</div>
+
+<!-- Profile Info -->
+<div class="profile-info-section">
+  <div class="d-flex justify-content-between align-items-start">
+    <div class="profile-avatar-wrap">
+      <img src="{{ profile_user.get_profile_picture_url }}" class="avatar-xl" alt="{{ profile_user.username }}"/>
+    </div>
+    <div class="mt-3">
+      {% if profile_user == request.user %}
+        <a href="{% url 'edit_profile' %}" class="btn-edit-profile">Edit profile</a>
+      {% else %}
+        <button class="btn-follow {% if is_following %}following{% endif %}"
+                onclick="toggleFollow(this, '{{ profile_user.username }}')">
+          {% if is_following %}Following{% else %}Follow{% endif %}
+        </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <h4 class="fw-800 mb-0 mt-2">
+    {{ profile_user.get_full_name|default:profile_user.username }}
+    {% if profile_user.is_verified %}
+      <i class="fas fa-check-circle verified-badge"></i>
+    {% endif %}
+    {% if profile_user.is_warned %}
+      <span class="warned-badge ms-2"><i class="fas fa-exclamation-triangle"></i> Warned</span>
+    {% endif %}
+    {% if profile_user.is_blocked %}
+      <span class="blocked-badge ms-2"><i class="fas fa-ban"></i> Suspended</span>
+    {% endif %}
+  </h4>
+  <p class="text-muted mb-2">@{{ profile_user.username }}</p>
+
+  {% if profile_user.bio %}
+    <p class="mb-2">{{ profile_user.bio }}</p>
+  {% endif %}
+
+  <div class="d-flex flex-wrap gap-3 text-muted small mb-3">
+    {% if profile_user.location %}
+      <span><i class="fas fa-map-marker-alt me-1"></i>{{ profile_user.location }}</span>
+    {% endif %}
+    {% if profile_user.website %}
+      <a href="{{ profile_user.website }}" class="text-twitter text-decoration-none" target="_blank">
+        <i class="fas fa-link me-1"></i>{{ profile_user.website }}
+      </a>
+    {% endif %}
+    <span><i class="fas fa-calendar me-1"></i>Joined {{ profile_user.date_joined|date:"F Y" }}</span>
+  </div>
+
+  <div class="profile-stats">
+    <div class="profile-stat">
+      <a href="{% url 'following_list' username=profile_user.username %}">
+        <span class="stat-number following-count">{{ following_count }}</span>
+        <span class="stat-label"> Following</span>
+      </a>
+    </div>
+    <div class="profile-stat">
+      <a href="{% url 'followers_list' username=profile_user.username %}">
+        <span class="stat-number followers-count">{{ followers_count }}</span>
+        <span class="stat-label"> Followers</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Tweets -->
+{% for tweet in tweets %}
+  {% include 'tweets/tweet_card.html' %}
+{% empty %}
+  <div class="empty-state">
+    <div class="empty-icon"><i class="fas fa-feather-alt"></i></div>
+    <h4>No tweets yet</h4>
+    <p>@{{ profile_user.username }} hasn't tweeted yet.</p>
+  </div>
+{% endfor %}
+{% endblock %}

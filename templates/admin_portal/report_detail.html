@@ -1,0 +1,176 @@
+{% extends 'admin_portal/base_admin.html' %}
+{% load tweet_filters %}
+
+{% block title %}Report #{{ report.id }} — Admin Portal{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex align-items-center gap-3 mb-4">
+  <a href="{% url 'admin_flagged' %}" class="btn btn-outline-secondary rounded-circle" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <h1 class="admin-page-title mb-0">Report #{{ report.id }}</h1>
+</div>
+
+<div class="row g-4">
+  <!-- Left: Content + Actions -->
+  <div class="col-lg-8">
+
+    <!-- Detection Result -->
+    <div class="bg-white rounded-4 p-4 border mb-4">
+      <h6 class="fw-800 mb-3">🤖 ML Detection Result</h6>
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <span class="label-badge {{ report.detected_label }}" style="font-size:15px;padding:8px 16px">
+          {{ report.get_label_display_name }}
+        </span>
+        <span class="status-badge {{ report.status }}">{{ report.get_status_display }}</span>
+      </div>
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <span class="text-muted">Confidence Score:</span>
+        <div class="confidence-bar flex-grow-1">
+          <div class="confidence-bar-fill" style="width:{{ report.confidence_score|floatformat:0 }}%"></div>
+        </div>
+        <strong class="{% if report.confidence_score > 0.8 %}text-danger{% else %}text-warning{% endif %}">
+          {{ report.confidence_score|floatformat:1 }}%
+        </strong>
+      </div>
+      <small class="text-muted">Flagged {{ report.created_at|timesince }} ago</small>
+    </div>
+
+    <!-- Flagged Content -->
+    <div class="bg-white rounded-4 p-4 border mb-4">
+      <h6 class="fw-800 mb-3">📝 Flagged Content</h6>
+
+      {% if report.tweet %}
+        <div class="d-flex gap-3">
+          {% if target_user %}
+          <a href="{% url 'admin_user_detail' user_id=target_user.id %}">
+            <img src="{{ target_user.get_profile_picture_url }}" class="rounded-circle" style="width:50px;height:50px;object-fit:cover"/>
+          </a>
+          {% endif %}
+          <div>
+            {% if target_user %}
+            <a href="{% url 'admin_user_detail' user_id=target_user.id %}" class="fw-700 text-decoration-none text-dark">
+              {{ target_user.get_full_name|default:target_user.username }}
+            </a>
+            <span class="text-muted ms-1">@{{ target_user.username }}</span>
+            {% endif %}
+            <p class="mt-2 fs-5">{{ report.tweet.content }}</p>
+            {% if report.tweet.image %}
+              <img src="{{ report.tweet.image.url }}" class="img-fluid rounded-3 mt-2" style="max-height:200px"/>
+            {% endif %}
+            <div class="text-muted small mt-2">{{ report.tweet.created_at|date:"M j, Y · h:i A" }}</div>
+          </div>
+        </div>
+
+      {% elif report.comment %}
+        <div class="d-flex gap-3">
+          {% if target_user %}
+          <img src="{{ target_user.get_profile_picture_url }}" class="rounded-circle" style="width:50px;height:50px;object-fit:cover"/>
+          {% endif %}
+          <div>
+            {% if target_user %}
+            <span class="fw-700">{{ target_user.get_full_name|default:target_user.username }}</span>
+            <span class="text-muted ms-1">@{{ target_user.username }}</span>
+            {% endif %}
+            <p class="mt-2">{{ report.comment.content }}</p>
+            <div class="text-muted small mt-2">{{ report.comment.created_at|date:"M j, Y · h:i A" }}</div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Admin Action Form -->
+    {% if report.status == 'pending' %}
+    <div class="bg-white rounded-4 p-4 border">
+      <h6 class="fw-800 mb-3">⚡ Take Action</h6>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label class="form-label fw-600">Admin Note (optional)</label>
+          <textarea name="admin_note" class="form-control rounded-3" rows="3"
+            placeholder="Add a note about your decision...">{{ report.admin_note }}</textarea>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <button type="submit" name="action" value="dismiss"
+              class="btn btn-outline-secondary w-100 rounded-3 py-3">
+              <i class="fas fa-check me-2"></i>
+              <strong>Dismiss</strong>
+              <div class="small text-muted mt-1">False positive — no action</div>
+            </button>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" name="action" value="warn_user"
+              class="btn btn-outline-warning w-100 rounded-3 py-3"
+              onclick="return confirm('Send a warning to this user?')">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <strong>Warn User</strong>
+              <div class="small text-muted mt-1">Send warning notification</div>
+            </button>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" name="action" value="delete_tweet"
+              class="btn btn-outline-danger w-100 rounded-3 py-3"
+              onclick="return confirm('Delete this content?')">
+              <i class="fas fa-trash me-2"></i>
+              <strong>Delete Content</strong>
+              <div class="small text-muted mt-1">Remove post + notify user</div>
+            </button>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" name="action" value="block_user"
+              class="btn btn-danger w-100 rounded-3 py-3"
+              onclick="return confirm('BLOCK this user permanently?')">
+              <i class="fas fa-ban me-2"></i>
+              <strong>Block User</strong>
+              <div class="small text-white-50 mt-1">Suspend account permanently</div>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    {% else %}
+      <div class="bg-white rounded-4 p-4 border">
+        <h6 class="fw-800 mb-3">✅ Review Complete</h6>
+        <p><strong>Status:</strong> <span class="status-badge {{ report.status }}">{{ report.get_status_display }}</span></p>
+        {% if report.reviewed_by %}<p><strong>Reviewed by:</strong> @{{ report.reviewed_by.username }}</p>{% endif %}
+        {% if report.reviewed_at %}<p><strong>At:</strong> {{ report.reviewed_at|date:"M j, Y · h:i A" }}</p>{% endif %}
+        {% if report.admin_note %}<p><strong>Note:</strong> {{ report.admin_note }}</p>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Right: User Info -->
+  <div class="col-lg-4">
+    {% if target_user %}
+    <div class="bg-white rounded-4 p-4 border mb-4">
+      <h6 class="fw-800 mb-3">👤 User Info</h6>
+      <div class="d-flex gap-3 align-items-center mb-3">
+        <img src="{{ target_user.get_profile_picture_url }}" class="rounded-circle" style="width:56px;height:56px;object-fit:cover"/>
+        <div>
+          <div class="fw-700">{{ target_user.get_full_name|default:target_user.username }}</div>
+          <div class="text-muted">@{{ target_user.username }}</div>
+        </div>
+      </div>
+      <div class="d-flex flex-column gap-2 mb-3">
+        {% if target_user.is_blocked %}
+          <span class="badge bg-danger rounded-pill fs-6 py-2">🚫 Account Blocked</span>
+        {% endif %}
+        {% if target_user.is_warned %}
+          <span class="badge bg-warning text-dark rounded-pill fs-6 py-2">⚠️ Warned ({{ target_user.warning_count }}x)</span>
+        {% endif %}
+      </div>
+      <div class="text-muted small">
+        <div class="mb-1"><i class="fas fa-calendar me-2"></i>Joined {{ target_user.date_joined|date:"M Y" }}</div>
+        <div class="mb-1"><i class="fas fa-envelope me-2"></i>{{ target_user.email }}</div>
+        <div><i class="fas fa-flag me-2"></i>{{ target_user.warning_count }} warning(s)</div>
+      </div>
+      <a href="{% url 'admin_user_detail' user_id=target_user.id %}" class="btn btn-outline-primary w-100 rounded-3 mt-3 small">
+        View Full Profile
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

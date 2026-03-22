@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}#{{ hashtag.name }} — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex align-items-center gap-3">
+  <a href="{% url 'explore' %}" class="btn btn-icon-round"><i class="fas fa-arrow-left"></i></a>
+  <div>
+    <h5 class="mb-0">#{{ hashtag.name }}</h5>
+    <small class="text-muted">{{ tweets.count }} Tweets</small>
+  </div>
+</div>
+
+{% for tweet in tweets %}
+  {% include 'tweets/tweet_card.html' %}
+{% empty %}
+  <div class="empty-state">
+    <div class="empty-icon"><i class="fas fa-hashtag"></i></div>
+    <h4>No tweets with #{{ hashtag.name }}</h4>
+  </div>
+{% endfor %}
+{% endblock %}

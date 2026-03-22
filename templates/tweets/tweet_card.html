@@ -1,0 +1,109 @@
+{% load static %}
+{% with tweet=tweet %}
+<div class="tweet-card" data-tweet-id="{{ tweet.id }}">
+
+  {% if tweet.is_retweet and tweet.original_tweet %}
+  <div class="retweet-indicator" style="padding-left:52px; margin-bottom:4px;">
+    <i class="fas fa-retweet me-1"></i>
+    <a href="{% url 'profile' username=tweet.author.username %}" class="text-secondary text-decoration-none fw-600 small">
+      @{{ tweet.author.username }} Retweeted
+    </a>
+  </div>
+  {% endif %}
+
+  <div class="d-flex gap-3 w-100">
+    <div class="flex-shrink-0">
+      <a href="{% url 'profile' username=tweet.author.username %}">
+        <img src="{{ tweet.author.get_profile_picture_url }}" class="avatar-sm" alt="{{ tweet.author.username }}"/>
+      </a>
+    </div>
+
+    <div class="flex-grow-1" style="min-width:0; overflow:hidden;">
+      <!-- Header -->
+      <div class="d-flex align-items-center flex-wrap gap-1 mb-1">
+        <a href="{% url 'profile' username=tweet.author.username %}" class="tweet-author-name fw-700 text-dark text-decoration-none">
+          {{ tweet.author.get_full_name|default:tweet.author.username }}
+          {% if tweet.author.is_verified %}<i class="fas fa-check-circle verified-badge ms-1"></i>{% endif %}
+        </a>
+        <span class="text-muted small">@{{ tweet.author.username }}</span>
+        <span class="text-muted small">· {{ tweet.created_at|timesince }} ago</span>
+
+        {% if tweet.author == request.user %}
+        <div class="ms-auto">
+          <div class="dropdown">
+            <button class="btn btn-sm btn-icon-round" data-bs-toggle="dropdown" onclick="event.stopPropagation()">
+              <i class="fas fa-ellipsis-h text-muted"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+              <li>
+                <form method="POST" action="{% url 'delete_tweet' tweet_id=tweet.id %}" onclick="event.stopPropagation()">
+                  {% csrf_token %}
+                  <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Delete this tweet?')">
+                    <i class="fas fa-trash me-2"></i>Delete
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Flag badge -->
+      {% if tweet.is_flagged and request.user.is_staff %}
+      <div class="mb-1">
+        <span class="flag-badge {{ tweet.flag_reason }}">
+          <i class="fas fa-exclamation-triangle me-1"></i>{{ tweet.get_flag_reason_display_name }} Detected
+        </span>
+      </div>
+      {% endif %}
+
+      <!-- Tweet content -->
+      {% if tweet.is_retweet and tweet.original_tweet %}
+        <p class="tweet-content mb-2">{{ tweet.original_tweet.content }}</p>
+        {% if tweet.quote_content %}
+        <div class="quoted-tweet mb-2">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <img src="{{ tweet.original_tweet.author.get_profile_picture_url }}" class="rounded-circle" style="width:18px;height:18px;object-fit:cover;flex-shrink:0"/>
+            <strong class="small">{{ tweet.original_tweet.author.get_full_name|default:tweet.original_tweet.author.username }}</strong>
+            <span class="text-muted small">@{{ tweet.original_tweet.author.username }}</span>
+          </div>
+          <p class="mb-0 small">{{ tweet.original_tweet.content }}</p>
+        </div>
+        {% endif %}
+        {% if tweet.original_tweet.image %}
+          <img src="{{ tweet.original_tweet.image.url }}" class="tweet-image mb-2" alt="Tweet image"/>
+        {% endif %}
+      {% else %}
+        <p class="tweet-content mb-2">{{ tweet.content }}</p>
+        {% if tweet.image %}
+          <img src="{{ tweet.image.url }}" class="tweet-image mb-2" alt="Tweet image"/>
+        {% endif %}
+      {% endif %}
+
+      <!-- Actions -->
+      <div class="tweet-actions" onclick="event.stopPropagation()">
+        <a href="{% url 'tweet_detail' tweet_id=tweet.id %}" class="action-btn">
+          <i class="far fa-comment"></i>
+          <span class="count">{{ tweet.get_comments_count|default:"" }}</span>
+        </a>
+
+        <button class="action-btn" id="rt-btn-{{ tweet.id }}" onclick="toggleRetweet(this, {{ tweet.id }})">
+          <i class="fas fa-retweet"></i>
+          <span class="count">{{ tweet.get_retweets_count|default:"" }}</span>
+        </button>
+
+        <button class="action-btn" id="like-btn-{{ tweet.id }}" onclick="toggleLike(this, {{ tweet.id }})">
+          <i class="far fa-heart"></i>
+          <span class="count">{{ tweet.get_likes_count|default:"" }}</span>
+        </button>
+
+        <button class="action-btn" id="bm-btn-{{ tweet.id }}" onclick="toggleBookmark(this, {{ tweet.id }})">
+          <i class="far fa-bookmark"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endwith %}

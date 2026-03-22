@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ list_type }} — @{{ profile_user.username }}{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex align-items-center gap-3">
+  <a href="{% url 'profile' username=profile_user.username %}" class="btn btn-icon-round">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <div>
+    <h5 class="mb-0">{{ profile_user.get_full_name|default:profile_user.username }}</h5>
+    <small class="text-muted">@{{ profile_user.username }}</small>
+  </div>
+</div>
+
+<div class="d-flex border-bottom">
+  <a href="{% url 'followers_list' username=profile_user.username %}"
+     class="flex-1 text-center py-3 text-decoration-none fw-600 {% if list_type == 'Followers' %}border-bottom border-primary text-primary{% else %}text-muted{% endif %}">
+    Followers
+  </a>
+  <a href="{% url 'following_list' username=profile_user.username %}"
+     class="flex-1 text-center py-3 text-decoration-none fw-600 {% if list_type == 'Following' %}border-bottom border-primary text-primary{% else %}text-muted{% endif %}"
+     style="border-bottom-width:2px!important">
+    Following
+  </a>
+</div>
+
+{% for u in users %}
+<div class="d-flex align-items-center gap-3 p-4 border-bottom">
+  <a href="{% url 'profile' username=u.username %}">
+    <img src="{{ u.get_profile_picture_url }}" class="avatar-sm" alt="{{ u.username }}"/>
+  </a>
+  <div class="flex-grow-1">
+    <a href="{% url 'profile' username=u.username %}" class="fw-700 text-dark text-decoration-none d-block">
+      {{ u.get_full_name|default:u.username }}
+    </a>
+    <span class="text-muted">@{{ u.username }}</span>
+    {% if u.bio %}<p class="mb-0 small mt-1">{{ u.bio|truncatechars:80 }}</p>{% endif %}
+  </div>
+  {% if u != request.user %}
+  <button class="btn-follow-sm" onclick="toggleFollow(this, '{{ u.username }}')">
+    Follow
+  </button>
+  {% endif %}
+</div>
+{% empty %}
+<div class="empty-state">
+  <div class="empty-icon"><i class="fas fa-users"></i></div>
+  <h4>No {{ list_type|lower }} yet</h4>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,271 @@
+{% extends 'admin_portal/base_admin.html' %}
+{% load static tweet_filters %}
+
+{% block title %}Dashboard — Admin Portal{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-page-title">📊 Dashboard</h1>
+
+<!-- Stats Grid -->
+<div class="row g-4 mb-5">
+  <div class="col-md-3 col-6">
+    <div class="stat-card">
+      <div class="stat-card-icon">👥</div>
+      <div class="stat-card-value">{{ total_users }}</div>
+      <div class="stat-card-label">Total Users</div>
+      <div class="mt-2 text-success small fw-600">+{{ new_users_today }} today</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card">
+      <div class="stat-card-icon">🐦</div>
+      <div class="stat-card-value">{{ total_tweets }}</div>
+      <div class="stat-card-label">Total Tweets</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card" style="border-color:#f4212e20">
+      <div class="stat-card-icon">🚨</div>
+      <div class="stat-card-value" style="color:#f4212e">{{ total_flagged }}</div>
+      <div class="stat-card-label">Flagged Tweets</div>
+      <div class="mt-2 text-danger small fw-600">{{ flagged_today }} today</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card" style="border-color:#ff710020">
+      <div class="stat-card-icon">⏳</div>
+      <div class="stat-card-value" style="color:#ff7100">{{ pending_reports }}</div>
+      <div class="stat-card-label">Pending Review</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-5">
+  <div class="col-md-3 col-6">
+    <div class="stat-card">
+      <div class="stat-card-icon">🚫</div>
+      <div class="stat-card-value">{{ blocked_users }}</div>
+      <div class="stat-card-label">Blocked Users</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card">
+      <div class="stat-card-icon">⚠️</div>
+      <div class="stat-card-value">{{ warned_users }}</div>
+      <div class="stat-card-label">Warned Users</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card" style="border-color:#f4212e20">
+      <div class="stat-card-icon">🗣️</div>
+      <div class="stat-card-value" style="color:#f4212e">{{ hate_count }}</div>
+      <div class="stat-card-label">Hate Speech Detected</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card" style="border-color:#ff710020">
+      <div class="stat-card-icon">😡</div>
+      <div class="stat-card-value" style="color:#ff7100">{{ cyber_count }}</div>
+      <div class="stat-card-label">Cyberbullying Detected</div>
+    </div>
+  </div>
+</div>
+
+<!-- Detection Chart -->
+<div class="row g-4 mb-5">
+  <div class="col-md-6">
+    <div class="bg-white rounded-4 p-4 border" style="border-color:#eff3f4!important">
+      <h6 class="fw-800 mb-4">Content Distribution</h6>
+      {% with total=hate_count|add:cyber_count|add:normal_count %}
+      {% if total > 0 %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-600 text-success">✅ Normal</span>
+            <span class="text-muted">{{ normal_count }}</span>
+          </div>
+          <div class="progress" style="height:10px; border-radius:9999px">
+            {% widthratio normal_count total 100 as normal_pct %}
+            <div class="progress-bar bg-success" style="width:{{ normal_pct }}%"></div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-600 text-danger">🚫 Hate Speech</span>
+            <span class="text-muted">{{ hate_count }}</span>
+          </div>
+          <div class="progress" style="height:10px; border-radius:9999px">
+            {% widthratio hate_count total 100 as hate_pct %}
+            <div class="progress-bar bg-danger" style="width:{{ hate_pct }}%"></div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-600 text-warning">⚠️ Cyberbullying</span>
+            <span class="text-muted">{{ cyber_count }}</span>
+          </div>
+          <div class="progress" style="height:10px; border-radius:9999px">
+            {% widthratio cyber_count total 100 as cyber_pct %}
+            <div class="progress-bar bg-warning" style="width:{{ cyber_pct }}%"></div>
+          </div>
+        </div>
+      {% else %}
+        <p class="text-muted">No data yet.</p>
+      {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="bg-white rounded-4 p-4 border" style="border-color:#eff3f4!important">
+      <h6 class="fw-800 mb-4">Quick Actions</h6>
+      <a href="{% url 'admin_flagged' %}?status=pending" class="btn btn-outline-danger rounded-3 w-100 mb-2 text-start">
+        <i class="fas fa-flag me-2"></i> Review Pending Flags ({{ pending_reports }})
+      </a>
+      <a href="{% url 'admin_users' %}?filter=blocked" class="btn btn-outline-secondary rounded-3 w-100 mb-2 text-start">
+        <i class="fas fa-ban me-2"></i> View Blocked Users ({{ blocked_users }})
+      </a>
+      <a href="{% url 'admin_users' %}?filter=warned" class="btn btn-outline-warning rounded-3 w-100 mb-2 text-start">
+        <i class="fas fa-exclamation-triangle me-2"></i> View Warned Users ({{ warned_users }})
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ML Model Performance -->
+<div class="bg-white rounded-4 p-4 border mb-5" style="border-color:#eff3f4!important">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h6 class="fw-800 mb-0">🤖 ML Model Performance</h6>
+    {% if ml_metrics %}
+      <span class="badge bg-success rounded-pill px-3 py-2">Model Trained ✅</span>
+    {% else %}
+      <span class="badge bg-warning text-dark rounded-pill px-3 py-2">⚠️ No Model — Using Keyword Detection</span>
+    {% endif %}
+  </div>
+
+  {% if ml_metrics %}
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="text-center p-3 rounded-3" style="background:#e8f5e9">
+        <div class="fw-800 fs-3 text-success">{{ ml_metrics.accuracy|floatformat:2 }}</div>
+        <div class="text-muted small fw-600">Accuracy</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="text-center p-3 rounded-3" style="background:#e3f2fd">
+        <div class="fw-800 fs-3 text-primary">{{ ml_metrics.precision|floatformat:2 }}</div>
+        <div class="text-muted small fw-600">Precision</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="text-center p-3 rounded-3" style="background:#fff3e0">
+        <div class="fw-800 fs-3 text-warning">{{ ml_metrics.recall|floatformat:2 }}</div>
+        <div class="text-muted small fw-600">Recall</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="text-center p-3 rounded-3" style="background:#fde8ea">
+        <div class="fw-800 fs-3 text-danger">{{ ml_metrics.f1_score|floatformat:2 }}</div>
+        <div class="text-muted small fw-600">F1-Score</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="p-3 rounded-3" style="background:#f8fafc">
+        <div class="fw-700 mb-1">🏆 Best Model</div>
+        <div class="text-twitter fw-600">{{ ml_metrics.best_model_name }}</div>
+        <div class="text-muted small mt-1">
+          Trained on {{ ml_metrics.training_samples }} samples · Tested on {{ ml_metrics.test_samples }} samples
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="p-3 rounded-3" style="background:#f8fafc">
+        <div class="fw-700 mb-2">📊 All Models Comparison</div>
+        {% for key, m in ml_metrics.all_models.items %}
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <span class="small">{{ m.name }}</span>
+          <span class="badge bg-light text-dark border">Acc: {{ m.accuracy|floatformat:2 }} | F1: {{ m.f1|floatformat:2 }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="alert alert-warning rounded-3 mb-0">
+    <strong>⚠️ ML Model not trained yet!</strong> The system is using basic keyword detection.
+    <br>To train the model, run this command in your terminal:
+    <code class="d-block mt-2 p-2 bg-dark text-white rounded">python ml_engine/train_model.py</code>
+    <br>For better accuracy, download the Kaggle dataset and run:
+    <code class="d-block mt-1 p-2 bg-dark text-white rounded">python ml_engine/train_model.py path/to/dataset.csv</code>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Recent Flags Table -->
+<div class="bg-white rounded-4 p-4 border" style="border-color:#eff3f4!important">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h6 class="fw-800 mb-0">Recent Flags (Pending)</h6>
+    <a href="{% url 'admin_flagged' %}" class="text-twitter text-decoration-none small fw-600">View all →</a>
+  </div>
+
+  {% if recent_flags %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Content</th>
+          <th>Author</th>
+          <th>Label</th>
+          <th>Confidence</th>
+          <th>Time</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in recent_flags %}
+        <tr>
+          <td style="max-width:250px">
+            {% if report.tweet %}
+              <span class="text-truncate d-block" style="max-width:200px">{{ report.tweet.content|truncatechars:60 }}</span>
+            {% elif report.comment %}
+              <span class="text-truncate d-block" style="max-width:200px">{{ report.comment.content|truncatechars:60 }}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if report.tweet %}
+              <a href="{% url 'admin_user_detail' user_id=report.tweet.author.id %}" class="text-decoration-none fw-600">
+                @{{ report.tweet.author.username }}
+              </a>
+            {% elif report.comment %}
+              @{{ report.comment.author.username }}
+            {% endif %}
+          </td>
+          <td><span class="label-badge {{ report.detected_label }}">{{ report.detected_label|replace:"_: "|title }}</span></td>
+          <td>
+            <span class="fw-600 {% if report.confidence_score > 0.8 %}text-danger{% else %}text-warning{% endif %}">
+              {{ report.confidence_score|floatformat:0 }}%
+            </span>
+          </td>
+          <td class="text-muted small">{{ report.created_at|timesince }} ago</td>
+          <td>
+            <a href="{% url 'admin_report_detail' report_id=report.id %}" class="btn btn-sm btn-primary rounded-pill px-3">
+              Review
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="text-center py-4 text-muted">
+      <i class="fas fa-check-circle text-success fs-2 mb-2 d-block"></i>
+      No pending flags. All clear!
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

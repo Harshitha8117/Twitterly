@@ -1,0 +1,97 @@
+{% extends 'admin_portal/base_admin.html' %}
+{% load tweet_filters %}
+
+{% block title %}Flagged Content — Admin Portal{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-page-title">🚨 Flagged Content</h1>
+
+<!-- Filters -->
+<div class="bg-white rounded-4 p-3 border mb-4 d-flex flex-wrap gap-2 align-items-center">
+  <span class="fw-600 me-2">Filter:</span>
+  <a href="?status=pending" class="btn btn-sm {% if status_filter == 'pending' %}btn-danger{% else %}btn-outline-secondary{% endif %} rounded-pill">
+    Pending
+  </a>
+  <a href="?status=reviewed" class="btn btn-sm {% if status_filter == 'reviewed' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill">
+    Reviewed
+  </a>
+  <a href="?status=action_taken" class="btn btn-sm {% if status_filter == 'action_taken' %}btn-success{% else %}btn-outline-secondary{% endif %} rounded-pill">
+    Action Taken
+  </a>
+  <a href="?status=dismissed" class="btn btn-sm {% if status_filter == 'dismissed' %}btn-secondary{% else %}btn-outline-secondary{% endif %} rounded-pill">
+    Dismissed
+  </a>
+  <a href="?" class="btn btn-sm btn-outline-secondary rounded-pill">All</a>
+
+  <div class="ms-auto d-flex gap-2">
+    <a href="?label=hate_speech" class="btn btn-sm {% if label_filter == 'hate_speech' %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill">
+      Hate Speech
+    </a>
+    <a href="?label=cyberbullying" class="btn btn-sm {% if label_filter == 'cyberbullying' %}btn-warning{% else %}btn-outline-warning{% endif %} rounded-pill">
+      Cyberbullying
+    </a>
+  </div>
+</div>
+
+{% if reports %}
+  {% for report in reports %}
+  <div class="report-card">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="d-flex gap-2 align-items-center flex-wrap">
+        <span class="label-badge {{ report.detected_label }}">
+          <i class="fas fa-{% if report.detected_label == 'hate_speech' %}fire{% else %}user-slash{% endif %} me-1"></i>
+          {{ report.detected_label|replace:"_: "|title }}
+        </span>
+        <span class="status-badge {{ report.status }}">{{ report.get_status_display }}</span>
+        <span class="text-muted small">{{ report.created_at|timesince }} ago</span>
+      </div>
+      <a href="{% url 'admin_report_detail' report_id=report.id %}" class="btn btn-sm btn-primary rounded-pill px-4">
+        Review
+      </a>
+    </div>
+
+    <!-- Flagged Content -->
+    <div class="bg-light rounded-3 p-3 mb-3">
+      {% if report.tweet %}
+        <div class="d-flex gap-2 align-items-center mb-2">
+          <img src="{{ report.tweet.author.get_profile_picture_url }}" class="rounded-circle" style="width:36px;height:36px;object-fit:cover"/>
+          <div>
+            <a href="{% url 'admin_user_detail' user_id=report.tweet.author.id %}" class="fw-700 text-decoration-none text-dark">
+              {{ report.tweet.author.get_full_name|default:report.tweet.author.username }}
+            </a>
+            <span class="text-muted small d-block">@{{ report.tweet.author.username }}</span>
+          </div>
+        </div>
+        <p class="mb-0">{{ report.tweet.content }}</p>
+      {% elif report.comment %}
+        <div class="d-flex gap-2 align-items-center mb-2">
+          <img src="{{ report.comment.author.get_profile_picture_url }}" class="rounded-circle" style="width:36px;height:36px;object-fit:cover"/>
+          <div>
+            <span class="fw-700">{{ report.comment.author.get_full_name|default:report.comment.author.username }}</span>
+            <span class="text-muted small d-block">@{{ report.comment.author.username }}</span>
+          </div>
+        </div>
+        <p class="mb-0"><em>Comment:</em> {{ report.comment.content }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Confidence -->
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-muted small">Confidence:</span>
+      <div class="confidence-bar flex-grow-1" style="max-width:200px">
+        <div class="confidence-bar-fill" style="width:{{ report.confidence_score|floatformat:0 }}%"></div>
+      </div>
+      <span class="fw-700 {% if report.confidence_score > 0.8 %}text-danger{% else %}text-warning{% endif %}">
+        {{ report.confidence_score|floatformat:0 }}%
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="bg-white rounded-4 p-5 border text-center">
+    <i class="fas fa-check-circle text-success fs-1 mb-3 d-block"></i>
+    <h5 class="fw-800">No flagged content found</h5>
+    <p class="text-muted">No items match the selected filter.</p>
+  </div>
+{% endif %}
+{% endblock %}

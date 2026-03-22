@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Explore — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h5>Explore</h5>
+</div>
+
+<div class="p-4">
+  <form method="GET" action="{% url 'explore' %}">
+    <div class="input-group mb-4" style="max-width:500px">
+      <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+      <input type="text" name="q" value="{{ query }}" class="form-control border-start-0 bg-light"
+        placeholder="Search tweets, hashtags..." style="box-shadow:none"/>
+      <button class="btn btn-primary rounded-end-pill">Search</button>
+    </div>
+  </form>
+
+  {% if query and tweets %}
+    <h6 class="fw-700 mb-3">Results for "{{ query }}"</h6>
+    {% for tweet in tweets %}{% include 'tweets/tweet_card.html' %}{% endfor %}
+  {% elif query %}
+    <div class="empty-state">
+      <div class="empty-icon"><i class="fas fa-search"></i></div>
+      <h4>No results for "{{ query }}"</h4>
+    </div>
+  {% else %}
+    <!-- Trending Hashtags Grid -->
+    <h6 class="fw-700 mb-3">Trending Hashtags</h6>
+    <div class="row g-3">
+      {% for tag in trending %}
+      <div class="col-md-6">
+        <a href="{% url 'hashtag_tweets' tag=tag.name %}" class="text-decoration-none">
+          <div class="sidebar-card d-flex align-items-center gap-3 h-100">
+            <div class="trending-hash-icon" style="font-size:28px; color:#1DA1F2">#</div>
+            <div>
+              <div class="fw-700 text-dark">#{{ tag.name }}</div>
+              <div class="text-muted small">{{ tag.tweet_count }} Tweet{{ tag.tweet_count|pluralize }}</div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% empty %}
+      <p class="text-muted">No trending hashtags yet. Start tweeting with #hashtags!</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

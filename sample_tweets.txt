@@ -1,0 +1,219 @@
+================================================================================
+TWITTERLY - SAMPLE TWEETS FOR TESTING
+================================================================================
+Use these tweets to test the hate speech and cyberbullying detection system.
+Post them as a normal user, then check the Admin Portal for flagged content.
+================================================================================
+
+
+================================================================================
+🔴 CATEGORY 1: HATE SPEECH (10 samples) — SHOULD BE FLAGGED
+================================================================================
+
+1. I hate all people of that race, they should be completely eliminated from society
+
+2. Those filthy immigrants need to go back where they came from, they are destroying our country
+
+3. Kill all the infidels, they are subhuman vermin who deserve to suffer
+
+4. Women are inferior and worthless, they should never be allowed to work or vote
+
+5. We should exterminate all members of that religion from our nation immediately
+
+6. That group of people are disgusting scum who ruin everything they touch
+
+7. Go back to your country you filthy animal, nobody wants you here
+
+8. Those terrorists and their families deserve to die horrible painful deaths
+
+9. That race is genetically inferior and is the cause of all problems in society
+
+10. We need to wipe out all these vermin before they destroy everything we built
+
+
+================================================================================
+🟠 CATEGORY 2: CYBERBULLYING (10 samples) — SHOULD BE FLAGGED
+================================================================================
+
+1. Nobody likes you, you should just kill yourself and do everyone a favor
+
+2. You are so ugly and fat that everyone laughs at you behind your back loser
+
+3. Go die you pathetic piece of garbage, absolutely no one wants you here
+
+4. You are a complete failure and totally worthless, your own family hates you
+
+5. You should be ashamed of yourself you disgusting freak, everyone despises you
+
+6. No one wants you here, leave forever and never come back to this place
+
+7. You are so stupid and worthless that nobody will ever love you in your life
+
+8. Just end yourself already, nobody would miss you or even notice you are gone
+
+9. You are a burden to everyone around you, please just disappear forever
+
+10. Everyone is laughing at you, you are the biggest embarrassment anyone has ever seen
+
+
+================================================================================
+🟡 CATEGORY 3: OFFENSIVE BUT BORDERLINE (10 samples) — MAY OR MAY NOT FLAG
+================================================================================
+
+1. That politician is absolutely terrible and should resign immediately, total idiot
+
+2. This team played like complete garbage today, worst performance ever seen
+
+3. I cannot stand people who talk in movies, they are so incredibly annoying
+
+4. That movie was absolute trash, worst thing I have ever wasted money on
+
+5. This food is disgusting, how can anyone eat this garbage they call a meal
+
+6. People who litter are the worst kind of humans, absolutely no respect at all
+
+7. That referee made the dumbest call I have ever seen, completely blind and useless
+
+8. This traffic is killing me, I hate this city and everyone who drives in it
+
+9. That actor is completely overrated and talentless, no idea why people like them
+
+10. I cannot believe how stupid some people are, common sense is totally dead
+
+
+================================================================================
+🟢 CATEGORY 4: NORMAL TWEETS (10 samples) — SHOULD NOT BE FLAGGED
+================================================================================
+
+1. I had such a wonderful day at the park today with my family, feeling blessed
+
+2. Just finished watching an amazing movie, highly recommend it to everyone here
+
+3. The weather is absolutely beautiful this weekend, perfect for outdoor activities
+
+4. So excited to start my new job next week, been preparing for months for this
+
+5. Happy birthday to my best friend in the whole world, love you so much always
+
+6. Just finished reading a fantastic book, the story was incredibly moving and deep
+
+7. Cooking a special dinner for the family tonight, trying out a new recipe I found
+
+8. Finally finished my college project after months of hard work, feeling so proud
+
+9. Just adopted a puppy today and she is the most adorable thing I have ever seen
+
+10. The concert last night was absolutely incredible, best night of my entire year
+
+
+================================================================================
+📱 CATEGORY 5: SOCIAL INTERACTION TWEETS (10 samples) — NORMAL
+================================================================================
+
+1. Can anyone recommend a good restaurant near downtown? Looking for Italian food
+
+2. Just hit 1000 followers, thank you all so much for the love and support everyone
+
+3. Good morning everyone, hope you all have a fantastic and productive day today
+
+4. Does anyone else feel like weekends go by way too fast? Back to Monday already
+
+5. Just tried yoga for the first time today and I absolutely love it, so relaxing
+
+6. Throwback to last summer vacation, miss those days so much with all my friends
+
+7. Currently studying for my exams, wish me luck everyone, going to need it badly
+
+8. Who else is excited for the new season of their favourite show starting tonight
+
+9. Just planted a new garden, cannot wait to see everything grow over the coming weeks
+
+10. Finished my morning run feeling amazing, exercise really does change everything
+
+
+================================================================================
+#️⃣  CATEGORY 6: HASHTAG TWEETS (10 samples) — TEST HASHTAG DETECTION
+================================================================================
+
+1. Beautiful sunset today #nature #photography #beautiful #sky #weekend
+
+2. Just finished my workout feeling great #fitness #gym #health #motivation #goals
+
+3. Amazing food at this new place #foodie #restaurant #delicious #yummy #lunch
+
+4. Study session in full swing #student #studying #college #exams #hardwork
+
+5. Road trip with the best people #travel #friends #adventure #roadtrip #memories
+
+6. New personal record at the gym today #fitness #gym #personalrecord #proud
+
+7. Movie night at home with the family #movies #family #cozy #weekend #netflix
+
+8. Morning coffee and good vibes only #coffee #morning #goodvibes #mondaymotivation
+
+9. Just graduated after four long years of hard work #graduation #college #proud
+
+10. Celebrating my birthday with the best people in my life #birthday #celebration
+
+
+================================================================================
+💬 CATEGORY 7: REPLY / COMMENT SAMPLES (10 samples) — FOR TESTING COMMENTS
+================================================================================
+
+1. Totally agree with you on this, could not have said it better myself honestly
+
+2. This is such a great point, more people really need to hear and understand this
+
+3. I completely disagree with this opinion, here is why I think differently about it
+
+4. Thank you so much for sharing this, it really made my day better reading this
+
+5. This is exactly what I have been trying to explain to people for so long now
+
+6. Interesting perspective, I had never thought about it from that angle before today
+
+7. You are absolutely right about this, same thing happened to me just last week
+
+8. Not sure I agree completely but I can definitely see where you are coming from
+
+9. This made me laugh so hard, exactly the kind of content I come here to see daily
+
+10. Great post as always, you always know how to make everyone feel welcome here
+
+
+================================================================================
+🧪 CATEGORY 8: EDGE CASE TWEETS (10 samples) — TEST MODEL BOUNDARIES
+================================================================================
+
+1. I really hate Mondays, they are the worst day of the entire week without question
+
+2. This game is killing me, I cannot win no matter what strategy I try today
+
+3. My allergies are destroying me this season, cannot stop sneezing at all lately
+
+4. I could kill for a good pizza right now, been craving it all day long today
+
+5. This homework is absolutely brutal, going to be up all night finishing it tonight
+
+6. The wifi is so bad here it is literally killing my productivity completely today
+
+7. I am dead tired after that workout, coach really pushed us hard today at practice
+
+8. This movie scared me to death, best horror film I have seen in years hands down
+
+9. The food at that place was so bad it should be illegal to serve it to customers
+
+10. I am going to destroy my opponent in this chess match, been practicing all week
+
+
+================================================================================
+HOW TO USE THESE SAMPLES:
+================================================================================
+1. Start your server: python manage.py runserver
+2. Login as a regular user at: http://127.0.0.1:8000/accounts/login/
+3. Copy and paste tweets from categories above into the tweet box
+4. Categories 1 and 2 should get flagged automatically
+5. Login as admin at: http://127.0.0.1:8000/admin-portal/login/
+6. Go to Flagged Content to review detected tweets
+7. Take action: Warn / Delete / Block as needed
+================================================================================

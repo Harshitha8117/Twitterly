@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home — Twitterly{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h5>Home</h5>
+</div>
+
+<!-- Compose Tweet -->
+<div class="compose-area">
+  <a href="{% url 'profile' username=user.username %}">
+    <img src="{{ user.get_profile_picture_url }}" class="avatar-sm" alt="you"/>
+  </a>
+  <div class="flex-grow-1">
+    <form method="POST" enctype="multipart/form-data" id="tweetForm">
+      {% csrf_token %}
+      <textarea name="content" id="tweet-content" class="form-control border-0 tweet-textarea fs-5"
+        placeholder="What's happening?" rows="2" maxlength="280"></textarea>
+      <div id="inlineImagePreviewContainer" class="mt-2 d-none">
+        <img id="inlineImagePreview" src="" class="img-fluid rounded-3" style="max-height:200px"/>
+      </div>
+      <hr class="my-2"/>
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex gap-1">
+          <label for="tweet-image" class="btn-icon-round text-twitter" title="Add image">
+            <i class="fas fa-image"></i>
+          </label>
+          <input type="file" name="image" id="tweet-image" accept="image/*" class="d-none"/>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span id="homeCharCounter" class="char-counter">280</span>
+          <button type="submit" class="btn-tweet-submit">Tweet</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Feed -->
+{% if tweets %}
+  {% for tweet in tweets %}
+    {% with tweet=tweet %}
+      {% include 'tweets/tweet_card.html' %}
+    {% endwith %}
+  {% endfor %}
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon"><i class="fas fa-feather-alt"></i></div>
+    <h4>Welcome to Twitterly!</h4>
+    <p>Follow some people to see their tweets here, or post your first tweet above.</p>
+    <a href="{% url 'explore' %}" class="btn btn-outline-primary rounded-pill mt-2">Explore</a>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block right_sidebar %}
+{% if suggestions %}
+<div class="sidebar-card">
+  <h6 class="sidebar-card-title">Who to follow</h6>
+  {% for suggestion in suggestions %}
+  <div class="follow-suggestion">
+    <a href="{% url 'profile' username=suggestion.username %}">
+      <img src="{{ suggestion.get_profile_picture_url }}" class="avatar-sm" alt="{{ suggestion.username }}"/>
+    </a>
+    <div class="user-info ms-2">
+      <a href="{% url 'profile' username=suggestion.username %}" class="uname d-block">
+        {{ suggestion.get_full_name|default:suggestion.username }}
+      </a>
+      <span class="uhandle">@{{ suggestion.username }}</span>
+    </div>
+    <button class="btn-follow-sm" onclick="toggleFollow(this, '{{ suggestion.username }}')">Follow</button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const textarea = document.getElementById('tweet-content');
+  const counter = document.getElementById('homeCharCounter');
+  if (textarea && counter) {
+    textarea.addEventListener('input', () => {
+      const remaining = 280 - textarea.value.length;
+      counter.textContent = remaining;
+      counter.className = 'char-counter';
+      if (remaining <= 20) counter.classList.add('warning');
+      if (remaining < 0) counter.classList.add('danger');
+    });
+  }
+  // Inline image preview
+  document.getElementById('tweet-image')?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('inlineImagePreview').src = ev.target.result;
+        document.getElementById('inlineImagePreviewContainer').classList.remove('d-none');
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+{% endblock %}

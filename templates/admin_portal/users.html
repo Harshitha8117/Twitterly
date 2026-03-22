@@ -1,0 +1,103 @@
+{% extends 'admin_portal/base_admin.html' %}
+
+{% block title %}Users — Admin Portal{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-page-title">👥 User Management</h1>
+
+<!-- Search + Filter -->
+<div class="bg-white rounded-4 p-3 border mb-4">
+  <form method="GET" class="d-flex flex-wrap gap-3 align-items-center">
+    <div class="input-group" style="max-width:300px">
+      <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+      <input type="text" name="q" value="{{ search }}" class="form-control border-start-0 bg-light"
+        placeholder="Search users..." style="box-shadow:none"/>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="?filter=blocked" class="btn btn-sm {% if filter_type == 'blocked' %}btn-danger{% else %}btn-outline-secondary{% endif %} rounded-pill">🚫 Blocked</a>
+      <a href="?filter=warned" class="btn btn-sm {% if filter_type == 'warned' %}btn-warning{% else %}btn-outline-secondary{% endif %} rounded-pill">⚠️ Warned</a>
+      <a href="?filter=staff" class="btn btn-sm {% if filter_type == 'staff' %}btn-info{% else %}btn-outline-secondary{% endif %} rounded-pill">🛡️ Staff</a>
+      <a href="?" class="btn btn-sm btn-outline-secondary rounded-pill">All</a>
+    </div>
+    <button type="submit" class="btn btn-primary rounded-pill px-4">Search</button>
+  </form>
+</div>
+
+<!-- Users Table -->
+<div class="bg-white rounded-4 border overflow-hidden">
+  <table class="table table-hover mb-0 align-middle">
+    <thead class="table-light">
+      <tr>
+        <th class="ps-4">User</th>
+        <th>Email</th>
+        <th>Tweets</th>
+        <th>Flags</th>
+        <th>Warnings</th>
+        <th>Status</th>
+        <th>Joined</th>
+        <th class="pe-4">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr {% if u.is_blocked %}class="table-danger"{% elif u.is_warned %}class="table-warning"{% endif %}>
+        <td class="ps-4">
+          <div class="d-flex align-items-center gap-2">
+            <img src="{{ u.get_profile_picture_url }}" class="rounded-circle" style="width:38px;height:38px;object-fit:cover"/>
+            <div>
+              <a href="{% url 'admin_user_detail' user_id=u.id %}" class="fw-700 text-decoration-none text-dark d-block">
+                {{ u.get_full_name|default:u.username }}
+              </a>
+              <span class="text-muted small">@{{ u.username }}</span>
+            </div>
+          </div>
+        </td>
+        <td class="text-muted small">{{ u.email }}</td>
+        <td><span class="badge bg-light text-dark">{{ u.tweet_count }}</span></td>
+        <td>
+          {% if u.flag_count > 0 %}
+            <span class="badge bg-danger">{{ u.flag_count }}</span>
+          {% else %}
+            <span class="text-muted">0</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if u.warning_count > 0 %}
+            <span class="badge bg-warning text-dark">{{ u.warning_count }}x</span>
+          {% else %}
+            <span class="text-muted">0</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if u.is_blocked %}
+            <span class="badge bg-danger">Blocked</span>
+          {% elif u.is_warned %}
+            <span class="badge bg-warning text-dark">Warned</span>
+          {% elif u.is_staff %}
+            <span class="badge bg-info">Staff</span>
+          {% else %}
+            <span class="badge bg-success">Active</span>
+          {% endif %}
+        </td>
+        <td class="text-muted small">{{ u.date_joined|date:"M j, Y" }}</td>
+        <td class="pe-4">
+          <div class="d-flex gap-1">
+            <a href="{% url 'admin_user_detail' user_id=u.id %}" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
+            {% if not u.is_staff %}
+            <button class="btn btn-sm {% if u.is_blocked %}btn-success{% else %}btn-danger{% endif %} rounded-pill"
+                    onclick="toggleBlock(this, {{ u.id }})">
+              {% if u.is_blocked %}Unblock{% else %}Block{% endif %}
+            </button>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="text-center py-5 text-muted">No users found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

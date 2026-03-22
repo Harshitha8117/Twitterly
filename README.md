@@ -1,178 +1,288 @@
-# 🐦 Twitterly — Twitter Clone with Hate Speech Detection
+# 🚀 Twitterly — Intelligent Twitter Clone with Hate Speech Detection
 
-A full-featured Twitter-like social media application built with Django, featuring real-time hate speech and cyberbullying detection using NLP/ML.
-
----
-
-## ✨ Features
-
-### User Features
-- ✅ Register / Login / Logout
-- ✅ Edit profile (bio, avatar, cover photo, location, website)
-- ✅ Post tweets (text + image, 280 chars)
-- ✅ Like / Unlike tweets
-- ✅ Retweet / Quote tweet
-- ✅ Reply to tweets (threaded comments)
-- ✅ Bookmark tweets
-- ✅ Follow / Unfollow users
-- ✅ Home feed (followed users' tweets)
-- ✅ Explore page (trending hashtags + search)
-- ✅ Notifications (likes, follows, replies, warnings)
-- ✅ Hashtag support (#tag auto-detection)
-
-### ML/NLP Features
-- ✅ Automatic hate speech detection on every tweet
-- ✅ Cyberbullying detection on comments too
-- ✅ Confidence score for each detection
-- ✅ Keyword-based fallback when model not trained
-- ✅ Train with your own dataset (CSV)
-
-### Admin Portal
-- ✅ Dashboard with stats and charts
-- ✅ Pending flag queue with real-time count
-- ✅ Review flagged content
-- ✅ **Dismiss** (false positive)
-- ✅ **Warn user** (sends notification + increments warning count)
-- ✅ **Delete content** (removes post + notifies user)
-- ✅ **Block user** (suspends account)
-- ✅ Unblock users
-- ✅ User management with search + filter
+A full-stack social media platform inspired by Twitter, enhanced with **real-time NLP-powered moderation** to detect hate speech and cyberbullying. Built for scalability, extensibility, and responsible digital interaction.
 
 ---
 
-## 🚀 Quick Start
+## 🌟 Overview
 
-### Option 1: Auto Setup (Linux/Mac)
+**Twitterly** combines a familiar microblogging experience with an integrated **machine learning moderation engine**, enabling safer online communities through automated content analysis and admin-driven governance.
+
+---
+
+## ✨ Core Capabilities
+
+### 👤 User Experience
+
+* Authentication (Register / Login / Logout)
+* Profile customization (bio, avatar, cover, location, website)
+* Tweet system (text + image, 280 characters)
+* Like, Retweet, Quote Tweet
+* Threaded replies (conversation chains)
+* Bookmarking system
+* Follow / Unfollow users
+* Personalized home feed
+* Explore page (hashtags + search)
+* Real-time notifications (likes, replies, follows, warnings)
+* Hashtag auto-detection and indexing
+
+---
+
+### 🧠 AI Moderation Engine
+
+* Real-time **hate speech detection** on tweets
+* **Cyberbullying detection** in replies/comments
+* Confidence scoring for predictions
+* Keyword-based fallback (when model unavailable)
+* Custom dataset training support (CSV input)
+
+---
+
+### 🛡️ Admin Control System
+
+* Analytics dashboard (activity + moderation stats)
+* Flagged content queue (real-time tracking)
+* Moderation actions:
+
+  * Dismiss (false positive)
+  * Warn user (notification + strike count)
+  * Delete content
+  * Block / Unblock users
+* Advanced user management (search + filtering)
+
+---
+
+## 🧱 Architecture
+
+```
+User Action → Django Backend → ML Engine → Classification
+        ↓                         ↓
+     Database ← Moderation Logic ← Flag System
+        ↓
+   Admin Dashboard / Notifications
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer    | Technology                                      |
+| -------- | ----------------------------------------------- |
+| Backend  | Django 4.2 (Python 3.11)                        |
+| Frontend | HTML5, CSS3, Bootstrap 5, JavaScript            |
+| Database | SQLite (Dev) / MySQL (Production)               |
+| ML/NLP   | Scikit-learn, NLTK, TF-IDF, Logistic Regression |
+| Auth     | Django Custom User Model                        |
+
+---
+
+## ⚙️ Installation & Setup
+
+### 🔹 Option 1: Automated (Linux / Mac)
+
 ```bash
 cd twitter_clone
 chmod +x setup_and_run.sh
 ./setup_and_run.sh
 ```
 
-### Option 2: Manual Setup (Windows or any OS)
+---
 
-**Step 1: Install Python packages**
+### 🔹 Option 2: Manual Setup
+
+#### 1. Install Dependencies
+
 ```bash
 pip install Django scikit-learn nltk pandas numpy Pillow django-crispy-forms crispy-bootstrap5 joblib
 ```
 
-**Step 2: Download NLTK data**
-```python
+#### 2. Download NLP Resources
+
+```bash
 python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
 ```
 
-**Step 3: Run migrations**
+#### 3. Apply Migrations
+
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-**Step 4: Create admin superuser**
+#### 4. Create Admin User
+
 ```bash
 python manage.py createsuperuser
 ```
-> Set `is_staff=True` — this gives you access to the Admin Portal at `/admin-portal/`
 
-**Step 5: Train ML model (optional)**
+#### 5. Train ML Model (Optional but Recommended)
+
 ```bash
-# With sample data (basic accuracy):
 python ml_engine/train_model.py
+```
 
-# With Kaggle dataset (better accuracy):
-# Download: https://www.kaggle.com/datasets/mrmorj/hate-speech-and-offensive-language-dataset
+Or with dataset:
+
+```bash
 python ml_engine/train_model.py path/to/dataset.csv
 ```
 
-**Step 6: Run server**
+#### 6. Run Server
+
 ```bash
 python manage.py runserver
 ```
 
 ---
 
-## 📍 URLs
+## 🌐 Application Routes
 
-| URL | Description |
-|-----|-------------|
-| `http://127.0.0.1:8000/` | Home feed |
-| `http://127.0.0.1:8000/accounts/register/` | Register |
-| `http://127.0.0.1:8000/accounts/login/` | Login |
-| `http://127.0.0.1:8000/explore/` | Explore / Search |
-| `http://127.0.0.1:8000/notifications/` | Notifications |
-| `http://127.0.0.1:8000/bookmarks/` | Bookmarks |
-| `http://127.0.0.1:8000/accounts/<username>/` | User profile |
-| `http://127.0.0.1:8000/admin-portal/` | Admin Dashboard |
-| `http://127.0.0.1:8000/admin-portal/flagged/` | Flagged content |
-| `http://127.0.0.1:8000/admin-portal/users/` | User management |
+| URL                     | Description       |
+| ----------------------- | ----------------- |
+| `/`                     | Home Feed         |
+| `/accounts/register/`   | User Registration |
+| `/accounts/login/`      | Login             |
+| `/explore/`             | Explore & Search  |
+| `/notifications/`       | Notifications     |
+| `/bookmarks/`           | Saved Tweets      |
+| `/accounts/<username>/` | User Profile      |
+| `/admin-portal/`        | Admin Dashboard   |
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
 twitter_clone/
-├── accounts/          # User auth, profiles, follow system
-├── tweets/            # Tweets, likes, retweets, bookmarks, hashtags
-├── notifications/     # Notification system
-├── admin_portal/      # Custom admin dashboard
-├── ml_engine/         # NLP + ML detection engine
-│   ├── predictor.py   # Main detection function
-│   ├── train_model.py # Train ML model
-│   └── model/         # Saved model files (after training)
-├── templates/         # HTML templates
-├── static/            # CSS, JS, Images
-│   ├── css/style.css
-│   └── js/app.js
-└── twitter_clone/     # Django project settings
+├── accounts/          # Authentication, profiles, follow system
+├── tweets/            # Core tweet logic
+├── notifications/     # Notification engine
+├── admin_portal/      # Moderation dashboard
+├── ml_engine/         # NLP + ML pipeline
+│   ├── predictor.py
+│   ├── train_model.py
+│   └── model/
+├── templates/         # UI templates
+├── static/            # CSS, JS, assets
+├── media/             # Uploaded content
+└── twitter_clone/     # Core settings
 ```
 
 ---
 
-## 🤖 ML Model
+## 🤖 Machine Learning Pipeline
 
-### How it works:
-1. User posts a tweet
-2. `ml_engine/predictor.py` → `analyze_text()` is called
-3. Text is cleaned (lowercase, remove URLs, stopwords, lemmatize)
+### Workflow
+
+1. User submits content
+2. `analyze_text()` processes input
+3. Preprocessing:
+
+   * Lowercasing
+   * URL removal
+   * Stopword filtering
+   * Lemmatization
 4. TF-IDF vectorization
-5. Classification: `normal` / `hate_speech` / `cyberbullying`
-6. If harmful → `FlagReport` created → Admin alerted
+5. Logistic Regression classification:
 
-### Improving accuracy:
-Download a real dataset and retrain:
-- **Kaggle Hate Speech Dataset**: https://www.kaggle.com/datasets/mrmorj/hate-speech-and-offensive-language-dataset
-- **HatEval**: https://competitions.codalab.org/competitions/19935
-- Any CSV with columns: `text`, `label` (normal/hate_speech/cyberbullying)
+   * `normal`
+   * `hate_speech`
+   * `cyberbullying`
+6. If harmful:
 
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Backend | Python 3.11 + Django 4.2 |
-| Frontend | HTML5, CSS3, Bootstrap 5, JavaScript |
-| Database | SQLite (dev) / MySQL (prod) |
-| ML/NLP | Scikit-learn, NLTK, TF-IDF, Logistic Regression |
-| Auth | Django built-in + custom User model |
+   * Flag created
+   * Admin notified
 
 ---
 
-## 🔐 Make a User Admin
+## 📊 Model Improvement
+
+Train with real datasets for higher accuracy:
+
+* Kaggle Hate Speech Dataset
+* HatEval Dataset
+
+Expected format:
+
+```
+text,label
+"This is abusive",hate_speech
+```
+
+---
+
+## 🔐 Admin Privileges Setup
 
 ```bash
 python manage.py shell
->>> from accounts.models import User
->>> u = User.objects.get(username='yourusername')
->>> u.is_staff = True
->>> u.save()
+```
+
+```python
+from accounts.models import User
+u = User.objects.get(username='yourusername')
+u.is_staff = True
+u.save()
 ```
 
 ---
 
-## 📝 Notes
+## 🚀 Production Deployment
 
-- Images are stored in `media/` folder
-- Static files served by Django in development
-- For production, use Nginx + Gunicorn + WhiteNoise
-- Change `SECRET_KEY` in `settings.py` before deployment
+Recommended stack:
+
+* Gunicorn (WSGI server)
+* Nginx (reverse proxy)
+* MySQL / PostgreSQL
+* WhiteNoise (static file serving)
+
+⚠️ Important:
+
+* Set `DEBUG = False`
+* Configure `ALLOWED_HOSTS`
+* Secure `SECRET_KEY`
+* Use environment variables
+
+---
+
+## 🧭 Design Philosophy
+
+This project is not just a clone—it's a **reimagined social platform**:
+
+* Content ≠ just publishing → it's **risk-evaluated communication**
+* Moderation ≠ reactive → it's **predictive and proactive**
+* Admin ≠ passive → it's **decision intelligence**
+
+---
+
+## 📌 Future Enhancements
+
+* Real-time WebSocket feeds
+* Transformer-based NLP models (BERT)
+* Shadow banning & trust scores
+* AI-assisted moderation suggestions
+* Distributed microservices architecture
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes:
+
+* Open an issue first
+* Propose architectural improvements
+* Align with project direction
+
+---
+
+## 📄 License
+
+MIT License — free to use, modify, and distribute.
+
+---
+
+## 💡 Final Thought
+
+Twitterly isn’t just a clone.
+It’s a **prototype for responsible social networks**—where AI doesn’t replace humans, but amplifies better decisions.
+
+

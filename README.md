@@ -1,4 +1,4 @@
-# 🚀 Twitterly — Intelligent Twitter Clone with Hate Speech Detection
+# Twitterly — Intelligent Twitter Clone with Hate Speech Detection
 
 A full-stack social media platform inspired by Twitter, enhanced with **real-time NLP-powered moderation** to detect hate speech and cyberbullying. Built for scalability, extensibility, and responsible digital interaction.
 
